@@ -1,14 +1,66 @@
 @import 'normalize.css/normalize';
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
+  font-size: 18px;
+  font-family: 'Space Mono', monospace;
 }
 
 #game {
   transform: scale(var(--ratio));
   transform-origin: top left;
+}
+
+#title {
+  position: relative;
+
+  width: 1920px;
+  height: 1080px;
+
+  background-image: url('../img/title.png');
+  background-position: center;
+}
+
+#title-start {
+  position: absolute;
+  top: 790px;
+  left: 1260px;
+
+  width: 490px;
+  height: 180px;
+
+  cursor: pointer;
+}
+
+#instructions {
+  position: relative;
+
+  width: 1920px;
+  height: 1080px;
+
+  background-image: url('../img/instructions.png');
+  background-position: center;
+}
+
+#instructions-text {
+  position: absolute;
+  top: 0;
+  left: 1233px;
+
+  width: 687px;
+  height: 1080px;
+
+  padding: 20px 50px;
+
+  h1 {
+    margin: 0;
+  }
 }
 
 #main-game {
@@ -25,11 +77,22 @@ body {
   display: block;
 
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 35px;
+  left: 750px;
+
+  width: 140px;
+  height: 67px;
 
   color: #ffffff;
-  font-size: 36px;
+  font-size: 48px;
+  line-height: 57px;
+  font-family: 'Source Code Pro', monospace;
+  text-align: center;
+
+  background: #1f1634;
+
+  border: 5px solid #d864dd;
+  border-radius: 5px;
 }
 
 .widget {
@@ -39,8 +102,8 @@ body {
   align-items: center;
   justify-content: center;
 
-  width: 131px;
-  height: 123px;
+  width: 141px;
+  height: 142px;
 
   &--bubble {
     border-radius: 50%;
@@ -124,59 +187,84 @@ body {
   }
 }
 
+@keyframes float {
+  0% {
+    transform: translate3d(0, -3%, 0);
+  }
+  50% {
+    transform: translate3d(0, 3%, 0);
+  }
+  100% {
+    transform: translate3d(0, -3%, 0);
+  }
+}
+
 #unpicked {
 
   .widget {
-    transform: translate3d(-50%, -50%, 0);
+    animation: float 5s infinite;
+    // transform: translate3d(-50%, -50%, 0);
   }
 
   #component-circuit {
-    top: 10%;
+    top: 4%;
     left: 90%;
+    animation-delay: -1000ms;
   }
   #component-bolt {
-    top: 25%;
-    left: 90%;
+    top: 20%;
+    left: 92%;
+    animation-delay: -7000ms;
   }
   #component-antenna {
-    top: 40%;
-    left: 90%;
+    top: 41%;
+    left: 78%;
+    animation-delay: -5000ms;
   }
   #component-cog {
-    top: 55%;
-    left: 90%;
+    top: 56%;
+    left: 82%;
+    animation-delay: 0ms;
   }
   #component-piston {
-    top: 70%;
-    left: 90%;
+    top: 74%;
+    left: 92%;
+    animation-delay: -6000ms;
   }
   #component-sphere {
     top: 85%;
-    left: 90%;
+    left: 86%;
+    animation-delay: -4000ms;
   }
   #component-tubing {
-    top: 10%;
-    left: 80%;
+    top: 14%;
+    left: 84%;
+    animation-delay: -9000ms;
   }
   #component-keypad {
-    top: 25%;
-    left: 80%;
+    top: 26%;
+    left: 78%;
+    animation-delay: -8000ms;
   }
   #component-valve {
-    top: 40%;
-    left: 80%;
+    top: 34%;
+    left: 88%;
+    animation-delay: -1200ms;
   }
   #component-wire {
-    top: 55%;
-    left: 80%;
+    top: 50%;
+    left: 90%;
+    animation-delay: -2000ms;
   }
   #component-reactor {
     top: 70%;
-    left: 80%;
+    left: 84%;
+    animation-delay: -3000ms;
   }
   #component-dab {
-    top: 85%;
-    left: 80%;
+    top: 79%;
+    left: 78%;
+    animation-delay: -1000ms;
   }
 }
 
@@ -189,35 +277,79 @@ body {
   height: 622px;
 
   .widget {
+    animation: none !important;
+    
     &:nth-child(1) {
       position: absolute;
       top: 75px;
-      left: 95px;
+      left: 142px;
     }
     &:nth-child(2) {
       position: absolute;
-      top: 406px;
-      left: 237px;
+      top: 393px;
+      left: 87px;
     }
     &:nth-child(3) {
       position: absolute;
-      top: 141px;
-      left: 477px;
+      top: 103px;
+      left: 585px;
     }
     &:nth-child(4) {
       position: absolute;
-      top: 407px;
-      left: 697px;
+      top: 323px;
+      left: 388px;
     }
     &:nth-child(5) {
       position: absolute;
-      top: 135px;
-      left: 905px;
+      top: 81px; 
+      left: 919px;
     }
     &:nth-child(6) {
       position: absolute;
-      top: 462px;
-      left: 1083px;
+      top: 324px;
+      left: 796px;
     }
   }
+}
+
+#game-over {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+
+  z-index: 9999;
+
+  width: 60%;
+  height: 80%;
+
+  background: rgba(255, 255, 255, 0.8);
+  border: 10px solid #d864dd;
+  border-radius: 5px;
+
+  font-size: 28px;
+  text-align: center;
+}
+
+.dancing-alien {
+  display: block;
+  margin: 0 auto;
+}
+
+.game-button { 
+  width: 400px;
+  height: 100px;
+  background: #d864dd;
+  color: white;
+  font-size: 48px;
+  font-family: 'Space Mono', monospace;
+  cursor: hover;
+}
+
+h1 {
+  font-size: 68px;
+  font-family: 'Space Mono', monospace;
+}
+
+h2 {
+  font-family: 'Space Mono', monospace;
 }

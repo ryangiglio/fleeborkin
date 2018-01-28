@@ -11,8 +11,9 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import * as Game from '../../Game'
+import * as constants from '../constants'
 
-import { images, sounds } from '../../data'
+import { widgetSprites, widgetNames, dispatcherDialogue } from '../../data'
 
 // Components
 import Main from './main.js'
@@ -26,7 +27,9 @@ class Container extends Component {
 
   componentWillMount () {
     this.resetGame()
-    this.startGame()
+      .then(() => {
+        this.startGame()
+      })
   }
 
   componentWillUpdate (newProps) {
@@ -34,57 +37,140 @@ class Container extends Component {
   }
 
   componentWillUnmount () {
-    clearInterval(this.state.instructionInterval)
+    clearInterval(this.state.targetSoundInterval)
   }
 
   resetGame () {
-    const orderedImageKeys = Object.keys(images)
-    const orderedSoundKeys = Object.keys(sounds)
+    return new Promise((resolve, reject) => {
+      const orderedImageKeys = Object.keys(widgetSprites)
+      const orderedSoundKeys = _.shuffle(Object.keys(widgetNames))
 
-    const unpickedWidgets = orderedImageKeys.map((imgKey, index) => {
-      return {
-        imgKey,
-        imgSrc: images[imgKey].src,
-        spriteWidth: images[imgKey].spriteWidth,
-        spriteHeight: images[imgKey].spriteHeight,
-        fps: images[imgKey].fps,
-        direction: images[imgKey].direction,
-        soundKey: orderedSoundKeys[index],
-        soundSrc: sounds[orderedSoundKeys[index]].src,
+      const unpickedWidgets = orderedImageKeys.map((imgKey, index) => {
+        return {
+          imgKey,
+          imgSrc: widgetSprites[imgKey].src,
+          spriteWidth: widgetSprites[imgKey].spriteWidth,
+          spriteHeight: widgetSprites[imgKey].spriteHeight,
+          fps: widgetSprites[imgKey].fps,
+          direction: widgetSprites[imgKey].direction,
+          soundKey: orderedSoundKeys[index],
+          soundSrc: widgetNames[orderedSoundKeys[index]].src,
+        }
+      })
+
+      const currentTarget = _.sample(unpickedWidgets)
+
+      const currentTargetSound = new Howl({
+        src: [currentTarget.soundSrc],
+        stereo: constants.DISPATCHER_CHANNEL,
+      })
+
+      const failSound = new Howl({
+        src: [`${process.env.PUBLIC_URL}/sounds/FX_Failure.wav`],
+        volume: 0.3,
+        stereo: constants.MECHANIC_CHANNEL,
+      })
+
+      const successSound = new Howl({
+        src: [`${process.env.PUBLIC_URL}/sounds/FX_Success.wav`],
+        volume: 0.3,
+        stereo: constants.MECHANIC_CHANNEL,
+      })
+
+      const dispatcherSounds = {
+        intro: new Howl({
+          src: [dispatcherDialogue.intro],
+          stereo: constants.DISPATCHER_CHANNEL,
+          onplay: () => {
+            this.state.currentTargetSound.stop()
+            this.setState({
+              currentTargetLoopPaused: true,
+            })
+          },
+          onend: () => {
+            this.state.currentTargetSound.play()
+            this.setState({
+              currentTargetLoopPaused: false,
+            })
+          },
+        }),
+        wrongPart: new Howl({
+          src: [dispatcherDialogue.wrongPart],
+          stereo: constants.DISPATCHER_CHANNEL,
+          onplay: () => {
+            this.state.currentTargetSound.stop()
+            this.setState({
+              currentTargetLoopPaused: true,
+            })
+          },
+          onend: () => {
+            this.state.currentTargetSound.play()
+            this.setState({
+              currentTargetLoopPaused: false,
+            })
+          },
+        }),
+        win: new Howl({
+          src: [dispatcherDialogue.win],
+        }),
+        loss: new Howl({
+          src: [dispatcherDialogue.loss],
+        }),
+        countdown: dispatcherDialogue.countdown.map(src => {
+          return new Howl({
+            src: [src],
+            stereo: constants.DISPATCHER_CHANNEL,
+            onplay: () => {
+              this.state.currentTargetSound.stop()
+              this.setState({
+                currentTargetLoopPaused: true,
+              })
+            },
+            onend: () => {
+              this.state.currentTargetSound.play()
+              this.setState({
+                currentTargetLoopPaused: false,
+              })
+            },
+          })
+        }),
       }
-    })
 
-    const currentTarget = _.sample(unpickedWidgets)
-
-    const currentTargetSound = new Howl({
-      src: [currentTarget.soundSrc],
-      stereo: 1.0,
-    })
-
-    const failSound = new Howl({
-      src: [`${process.env.PUBLIC_URL}/sounds/FX_Failure.wav`],
-      volume: 0.5,
-    })
-
-    this.setState({
-      unpickedWidgets,
-      completedWidgets: [],
-      currentTarget,
-      currentTargetSound,
-      failSound,
-      timeLeft: 30, // SET THE TIMER HERE
+      this.setState({
+        unpickedWidgets,
+        completedWidgets: [],
+        currentTarget,
+        currentTargetSound,
+        currentTargetLoopPaused: false,
+        failSound,
+        successSound,
+        dispatcherSounds,
+        timeLeft: 180, // SET THE TIMER HERE
+        gameOver: false,
+        playerWon: false,
+      }, () => {
+        resolve()
+      })
     })
   }
 
   startGame () {
     const targetSoundInterval = setInterval(() => {
-      console.log('play', this.state.currentTargetSound)
-      // this.state.currentTargetSound.play()
-    }, 2000)
+      if (!this.state.currentTargetLoopPaused) {
+        this.state.currentTargetSound.play()
+      }
+    }, 3000)
 
     const timerInterval = setInterval(() => {
       this.tickTimer()
     }, 1000)
+
+    this.setState({
+      targetSoundInterval,
+      timerInterval,
+    })
+
+    this.state.dispatcherSounds.intro.play()
   }
 
   stopGame () {
@@ -94,7 +180,7 @@ class Container extends Component {
 
   tickTimer () {
     if (this.state.timeLeft <= 1) {
-      this.gameOver()
+      this.gameOverLoss()
     } else {
       this.setState({
         timeLeft: this.state.timeLeft - 1,
@@ -103,10 +189,24 @@ class Container extends Component {
   }
 
   handleWidgetClick (soundKey) {
-    if (this.state.currentTarget.soundKey === soundKey) {
-      this.targetHit()
-    } else {
-      this.state.failSound.play()
+    if (!this.state.gameOver) {
+      if (this.state.currentTarget.soundKey === soundKey) {
+        this.targetHit()
+      } else {
+        this.state.currentTargetSound.stop()
+        this.state.failSound.play()
+        this.state.dispatcherSounds.wrongPart.stop()
+        this.state.dispatcherSounds.wrongPart.play()
+        const timeLeft = _.clamp(this.state.timeLeft - 10, 0, 1000)
+
+        if (timeLeft <= 0) {
+          this.gameOverLoss()
+        }
+
+        this.setState({
+          timeLeft,
+        })
+      }
     }
   }
 
@@ -123,6 +223,9 @@ class Container extends Component {
       this.state.unpickedWidgets[targetIndex],
     ]
 
+    this.state.successSound.play()
+    this.state.currentTargetSound.stop()
+
     this.setState({
       unpickedWidgets: newUnpicked,
       completedWidgets: newCompleted,
@@ -131,11 +234,13 @@ class Container extends Component {
     // THIS IS WHERE YOU SET THE WIN CONDITION
     // If you haven't won yet
     if (newCompleted.length < 6) {
+      this.state.dispatcherSounds.countdown[this.state.completedWidgets.length].play()
+
       const newTarget = _.sample(newUnpicked)
 
       const newTargetSound = new Howl({
         src: newTarget.soundSrc,
-        stereo: 1.0,
+        stereo: constants.DISPATCHER_CHANNEL,
       })
 
       this.setState({
@@ -143,12 +248,30 @@ class Container extends Component {
         currentTargetSound: newTargetSound,
       })
     } else {
-      this.props.actions.finishGame(true)
+      this.gameOverWin()
     }
   }
 
-  gameOver () {
-    this.props.actions.finishGame(false)
+  gameOverLoss () {
+    this.state.dispatcherSounds.loss.play()
+
+    this.stopGame()
+
+    this.setState({
+      gameOver: true,
+      playerWon: false,
+    })
+  }
+
+  gameOverWin () {
+    this.state.dispatcherSounds.win.play()
+
+    this.stopGame()
+
+    this.setState({
+      gameOver: true,
+      playerWon: true,
+    })
   }
 
   render () {

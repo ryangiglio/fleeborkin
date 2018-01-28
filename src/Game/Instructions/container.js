@@ -37,7 +37,11 @@ class Container extends Component {
   render () {
     return (
       <Main
-        {...this.props} />
+        {...this.props}
+        resetGame={this.resetGame}
+        startGame={this.startGame}
+        finishGame={this.finishGame}
+      />
     )
   }
 }
@@ -48,7 +52,7 @@ Container.defaultProps = {}
 
 function mapStateToProps (state) {
   return {
-    ...state.Game,
+    ...state,
   }
 }
 

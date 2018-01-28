@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { Howl } from 'howler'
 
 import * as Game from '../../../Game'
+import * as constants from '../../constants'
 
 // Components
 import Main from './main.js'
@@ -23,7 +24,7 @@ class Container extends Component {
     console.log(props.soundSrc)
     const sound = new Howl({
       src: [props.soundSrc],
-      stereo: -1.0,
+      stereo: constants.MECHANIC_CHANNEL,
       preload: true,
     })
 

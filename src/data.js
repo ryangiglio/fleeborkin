@@ -1,4 +1,4 @@
-export const sounds = {
+export const widgetNames = {
   Buuuuuuuuuuuttt: {
     src: `${process.env.PUBLIC_URL}/sounds/Buuuuuuuuuuuttt.wav`,
   },
@@ -37,7 +37,7 @@ export const sounds = {
   },
 }
 
-export const images = {
+export const widgetSprites = {
   circuit: {
     src: `${process.env.PUBLIC_URL}/img/circuit_sheet.png`,
     spriteWidth: 197,
@@ -121,10 +121,32 @@ export const images = {
     // 92 frames
   },
   dab: {
-    src: `${process.env.PUBLIC_URL}/img/dab_sheet.png`,
-    spriteWidth: 76, 
-    spriteHeight: 151,
-    fps: 128,
+    src: `${process.env.PUBLIC_URL}/img/dab_sheet_3.png`,
+    spriteWidth: 96, 
+    spriteHeight: 160,
+    fps: 129,
     // 128 frames
   },
+}
+
+export const dispatcherDialogue = {
+  countdown: [
+    `${process.env.PUBLIC_URL}/sounds/five-left.wav`,
+    `${process.env.PUBLIC_URL}/sounds/four-left.wav`,
+    `${process.env.PUBLIC_URL}/sounds/three-left.wav`,
+    `${process.env.PUBLIC_URL}/sounds/two-left.wav`,
+    `${process.env.PUBLIC_URL}/sounds/one-left.wav`,
+  ],
+  intro: `${process.env.PUBLIC_URL}/sounds/intro.wav`,
+  wrongPart: `${process.env.PUBLIC_URL}/sounds/wrong-part.wav`,
+  win: `${process.env.PUBLIC_URL}/sounds/win.wav`,
+  loss: `${process.env.PUBLIC_URL}/sounds/loss.wav`,
+}
+
+export const dancingAlien = {
+  src: `${process.env.PUBLIC_URL}/img/dancing-alien_sheet.png`,
+  spriteWidth: 90, 
+  spriteHeight: 185,
+  fps: 49,
+  // 49 frames
 }

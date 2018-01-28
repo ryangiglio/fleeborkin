@@ -4,11 +4,10 @@ export const resetGame = () => ({
   type: `${constants.NAME}/GAME_RESET`,
 })
 
-export const startGame = () => ({
-  type: `${constants.NAME}/GAME_STARTED`,
+export const goToInstructions = () => ({
+  type: `${constants.NAME}/GAME_INSTRUCTIONS`,
 })
 
-export const finishGame = (playerWon) => ({
-  type: `${constants.NAME}/GAME_FINISHED`,
-  playerWon,
+export const startGame = () => ({
+  type: `${constants.NAME}/GAME_STARTED`,
 })
