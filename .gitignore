@@ -1,0 +1,10 @@
+node_modules
+/coverage
+build
+
+public/css/style*
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

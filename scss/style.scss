@@ -1,0 +1,223 @@
+@import 'normalize.css/normalize';
+
+body {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+#game {
+  transform: scale(var(--ratio));
+  transform-origin: top left;
+}
+
+#main-game {
+  position: relative;
+
+  width: 1920px;
+  height: 1080px;
+
+  background-image: url('../img/main-bg.png');
+  background-position: center;
+}
+
+#timer {
+  display: block;
+
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  color: #ffffff;
+  font-size: 36px;
+}
+
+.widget {
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 131px;
+  height: 123px;
+
+  &--bubble {
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .sprite {
+    position: absolute;
+  }
+}
+
+#component-circuit {
+  .sprite {
+    transform: scale(0.40);
+  }
+}
+
+#component-bolt {
+  .sprite {
+  }
+}
+
+#component-antenna {
+  .sprite {
+    transform: scale(0.4);
+  }
+}
+
+#component-cog {
+  .sprite {
+    transform: scale(0.6);
+  }
+}
+
+#component-piston {
+  .sprite {
+    transform: scale(0.6);
+  }
+}
+
+#component-sphere {
+  .sprite {
+    transform: scale(0.6);
+  }
+}
+
+#component-tubing {
+  .sprite {
+    transform: scale(0.4);
+  }
+}
+
+#component-keypad {
+  .sprite {
+    transform: scale(0.45);
+  }
+}
+
+#component-valve {
+  .sprite {
+    transform: scale(0.6);
+  }
+}
+
+#component-wire {
+  .sprite {
+    transform: scale(0.35);
+  }
+}
+
+#component-reactor {
+  .sprite {
+    transform: scale(0.4);
+  }
+}
+
+#component-dab {
+  .sprite {
+    transform: scale(0.6);
+  }
+}
+
+#unpicked {
+
+  .widget {
+    transform: translate3d(-50%, -50%, 0);
+  }
+
+  #component-circuit {
+    top: 10%;
+    left: 90%;
+  }
+  #component-bolt {
+    top: 25%;
+    left: 90%;
+  }
+  #component-antenna {
+    top: 40%;
+    left: 90%;
+  }
+  #component-cog {
+    top: 55%;
+    left: 90%;
+  }
+  #component-piston {
+    top: 70%;
+    left: 90%;
+  }
+  #component-sphere {
+    top: 85%;
+    left: 90%;
+  }
+  #component-tubing {
+    top: 10%;
+    left: 80%;
+  }
+  #component-keypad {
+    top: 25%;
+    left: 80%;
+  }
+  #component-valve {
+    top: 40%;
+    left: 80%;
+  }
+  #component-wire {
+    top: 55%;
+    left: 80%;
+  }
+  #component-reactor {
+    top: 70%;
+    left: 80%;
+  }
+  #component-dab {
+    top: 85%;
+    left: 80%;
+  }
+}
+
+#completed {
+  position: absolute;
+  top: 200px;
+  left: 170px;
+
+  width: 1275px;
+  height: 622px;
+
+  .widget {
+    &:nth-child(1) {
+      position: absolute;
+      top: 75px;
+      left: 95px;
+    }
+    &:nth-child(2) {
+      position: absolute;
+      top: 406px;
+      left: 237px;
+    }
+    &:nth-child(3) {
+      position: absolute;
+      top: 141px;
+      left: 477px;
+    }
+    &:nth-child(4) {
+      position: absolute;
+      top: 407px;
+      left: 697px;
+    }
+    &:nth-child(5) {
+      position: absolute;
+      top: 135px;
+      left: 905px;
+    }
+    &:nth-child(6) {
+      position: absolute;
+      top: 462px;
+      left: 1083px;
+    }
+  }
+}

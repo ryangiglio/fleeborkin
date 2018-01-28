@@ -1,0 +1,29 @@
+{
+    "env": {
+      "es6": true,
+      "node": true,
+      "mocha": true,
+      "jest": true
+    },
+    "extends": ["standard", "standard-react", "standard-jsx"],
+    "globals": {
+      "fetch": true,
+      "Headers": true,
+      "it": true,
+      "localStorage": true,
+      "Request": true,
+      "URL": true
+    },
+    "rules": {
+      "jsx-quotes": ["error", "prefer-double"],
+      "comma-dangle": ["error", "always-multiline"],
+      "object-curly-spacing": ["error", "always"],
+      "object-curly-newline": ["error", {
+        "ObjectExpression": { "minProperties": 2 },
+        "ObjectPattern": "never"
+      }],
+      "object-property-newline": ["error", { "allowMultiplePropertiesPerLine": false }],
+      "function-paren-newline": ["error", "multiline"]
+    }
+  }
+  

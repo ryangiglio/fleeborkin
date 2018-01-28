@@ -1,0 +1,125 @@
+image: lambci/lambda:build-nodejs6.10
+
+before_script:
+  - aws configure set aws_access_key_id $GL_AWS_ACCESS_KEY_ID --profile default 
+  - aws configure set aws_secret_access_key $GL_AWS_SECRET_ACCESS_KEY --profile default
+  - aws configure set preview.cloudfront true
+  #- git config --global user.email "test@example.com"
+  #- git config --global user.name "Test User"
+
+cache:
+  key: ${CI_BUILD_REF_NAME}
+  paths:
+    - node_modules/
+    - build/
+
+stages:
+  - config
+  - build
+  # - test
+  - deploy
+  - version
+
+config:
+  stage: config
+  script:
+    - npm install semver -g
+    - sh ./deploy/skip.sh
+    - npm install -g mocha
+    - npm install -g env-cmd
+    - npm install -g json
+    - npm install -g react-scripts
+    - npm install -g gulp
+    - npm install
+  only:
+    - develop
+    - master
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    policy: push
+    paths:
+      - node_modules/
+
+
+build_prod:
+  stage: build
+  script:
+    - unset CI #
+    - npm run build:production
+  only:
+    - master
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    paths:
+      - node_modules/
+      - build/
+
+build_staging:
+  stage: build
+  script:
+    - unset CI #
+    - npm run build:staging
+  only:
+    - develop
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    paths:
+      - node_modules/
+      - build/
+
+
+deploy_prod:
+  stage: deploy
+  only: 
+    - master
+  script:
+    - curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+    - python3 get-pip.py
+    - pip install awscli --ignore-installed six
+    - pip install awsebcli --upgrade --user
+    - export PATH="~/.local/bin:$PATH"
+    - ls -la
+    - git init
+    - git add .
+    - eb init jobs.werk.co --region=us-east-1 --profile default --platform "Docker 17.03.1-ce"
+    - eb deploy prod-jobs-werk-co--staged
+    - aws cloudfront create-invalidation --distribution-id=$GL_CLOUDFRONT_ID --paths '/*' --profile=$AWS_PROFILE
+  cache:
+    key: ${CI_BUILD_REF_NAME}   
+    policy: pull
+    paths:
+      - node_modules/
+      - build/
+
+deploy_staging:
+  stage: deploy
+  only: 
+    - develop
+  script:
+    - curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+    - python3 get-pip.py
+    - pip install awscli --ignore-installed six
+    - pip install awsebcli --upgrade --user
+    - export PATH="~/.local/bin:$PATH"
+    - ls -la
+    - git init
+    - git add .
+    - eb init jobs.werk.co --region=us-east-1 --profile default --platform "Docker 17.03.1-ce"
+    - eb deploy staging-jobs-werk-co--staged
+  cache:
+    key: ${CI_BUILD_REF_NAME}   
+    policy: pull
+    paths:
+      - node_modules/
+      - build/
+
+version:
+  stage: version  
+  script: 
+    - npm install semver -g
+    - git remote -v
+    - echo "$CI_REPOSITORY_URL"
+    - sh ./deploy/semver.sh
+  only:
+    - develop
+
