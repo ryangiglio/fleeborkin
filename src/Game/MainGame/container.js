@@ -62,18 +62,22 @@ class Container extends Component {
 
       const currentTargetSound = new Howl({
         src: [currentTarget.soundSrc],
+        preload: true,
         stereo: constants.DISPATCHER_CHANNEL,
+        volume: 2.0,
       })
 
       const failSound = new Howl({
         src: [`${process.env.PUBLIC_URL}/sounds/FX_Failure.wav`],
-        volume: 0.3,
+        preload: true,
+        volume: 0.6,
         stereo: constants.MECHANIC_CHANNEL,
       })
 
       const successSound = new Howl({
         src: [`${process.env.PUBLIC_URL}/sounds/FX_Success.wav`],
-        volume: 0.3,
+        preload: true,
+        volume: 0.6,
         stereo: constants.MECHANIC_CHANNEL,
       })
 
@@ -81,6 +85,8 @@ class Container extends Component {
         intro: new Howl({
           src: [dispatcherDialogue.intro],
           stereo: constants.DISPATCHER_CHANNEL,
+          preload: true,
+          volume: 2.0,
           onplay: () => {
             this.state.currentTargetSound.stop()
             this.setState({
@@ -97,6 +103,8 @@ class Container extends Component {
         wrongPart: new Howl({
           src: [dispatcherDialogue.wrongPart],
           stereo: constants.DISPATCHER_CHANNEL,
+          preload: true,
+          volume: 2.0,
           onplay: () => {
             this.state.currentTargetSound.stop()
             this.setState({
@@ -112,14 +120,20 @@ class Container extends Component {
         }),
         win: new Howl({
           src: [dispatcherDialogue.win],
+          volume: 2.0,
+          preload: true,
         }),
         loss: new Howl({
           src: [dispatcherDialogue.loss],
+          volume: 2.0,
+          preload: true,
         }),
         countdown: dispatcherDialogue.countdown.map(src => {
           return new Howl({
             src: [src],
             stereo: constants.DISPATCHER_CHANNEL,
+            preload: true,
+            volume: 2.0,
             onplay: () => {
               this.state.currentTargetSound.stop()
               this.setState({
@@ -241,6 +255,8 @@ class Container extends Component {
       const newTargetSound = new Howl({
         src: newTarget.soundSrc,
         stereo: constants.DISPATCHER_CHANNEL,
+        preload: true,
+        volume: 2.0,
       })
 
       this.setState({

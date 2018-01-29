@@ -25,6 +25,7 @@ class Container extends Component {
     const sound = new Howl({
       src: [props.soundSrc],
       stereo: constants.MECHANIC_CHANNEL,
+      volume: 2.0,
       preload: true,
     })
 

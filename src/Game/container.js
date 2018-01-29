@@ -29,6 +29,8 @@ class Container extends Component {
       src: [`${process.env.PUBLIC_URL}/sounds/Ambiance.wav`],
       autoplay: true,
       loop: true,
+      preload: true,
+      volume: 1.5,
     })
   }
 
